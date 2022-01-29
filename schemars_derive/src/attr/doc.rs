@@ -42,30 +42,20 @@ fn get_doc(attrs: &[Attribute]) -> Option<String> {
         })
         .collect::<Vec<_>>();
 
-    none_if_empty(attrs.join("\n"))
-
-    // let mut lines = attrs
-    //     .iter()
-    //     .flat_map(|a| a.split('\n'))
-    //     // .map(|s| s[1..])
-    //     .collect::<Vec<_>>();
-
-    // if let Some(&"") = lines.last() {
-    //     lines.pop();
-    // }
-
-    // // Added for backward-compatibility, but perhaps we shouldn't do this
-    // // https://github.com/rust-lang/rust/issues/32088
-    // if lines.iter().all(|l| l.starts_with('*')) {
-    //     for line in lines.iter_mut() {
-    //         *line = line[1..].trim()
-    //     }
-    //     while let Some(&"") = lines.first() {
-    //         lines.remove(0);
-    //     }
-    // };
-
-    // none_if_empty(lines.join("\n"))
+    none_if_empty(
+        attrs
+            .iter()
+            .flat_map(|a| a.split('\n'))
+            .map(|line| {
+                if line.starts_with(' ') {
+                    &line[1..]
+                } else {
+                    line
+                }
+            })
+            .collect::<Vec<_>>()
+            .join("\n"),
+    )
 }
 
 fn none_if_empty(s: String) -> Option<String> {
